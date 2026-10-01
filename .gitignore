@@ -36,3 +36,6 @@ Thumbs.db
 .idea/
 .vscode/
 
+# Private working notes for the website write-up
+docs/
+
