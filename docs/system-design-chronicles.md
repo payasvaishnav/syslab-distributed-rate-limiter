@@ -127,7 +127,7 @@ hold the implementation and experiment detail.
     real-Redis tests for sliding log and token bucket. The GitHub Actions file
     exists, but a hosted run has not yet been observed. You chose
     `https://github.com/payasvaishnav/syslab-distributed-rate-limiter` as the
-    source repository; its first push still needs verification.
+    source repository; the first `main` push succeeded.
 
 ### Environment and test-harness notes from the build
 
@@ -152,8 +152,8 @@ hold the implementation and experiment detail.
 ## Open items and honesty checks
 
 - The directory was not a Git repository at the earlier check. It has now been
-  initialized locally. The first push to the chosen GitHub repository and a
-  hosted CI run still need verification.
+  initialized locally and pushed to the chosen GitHub repository. A hosted CI
+  run has not yet been observed.
 - No public API deployment, dashboard, automatic failover, request-ID
   deduplication, trusted client identity, or multi-region consistency exists.
 - Load-test throughput is from a short local run. It is not a production
@@ -1173,3 +1173,14 @@ notebook. `.env.example` is allowed if we later add a safe template.
 At the time of this change the directory was still not a Git repository, so
 `git check-ignore` could not verify the patterns against an actual index. The
 first Git initialization/push and hosted CI run remain open items.
+
+## Increment 17 — Publish the source
+
+The repository is `https://github.com/payasvaishnav/syslab-distributed-rate-limiter`.
+Before staging, `git status --short --ignored` revealed that `.gitignore`
+actually contained a `docs/` rule, contrary to the intended policy in Increment
+16. We removed that rule and verified that the raw notebook was included in the
+commit while Python caches stayed ignored. The first `main` push succeeded.
+The initial commit message was `Build distributed Redis rate limiter`; no Git
+tag or automated-author attribution was added. Hosted CI still needs readback
+before we can claim a passing GitHub run.
