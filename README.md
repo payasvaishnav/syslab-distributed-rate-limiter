@@ -1,8 +1,7 @@
 # Distributed API Rate Limiter
 
 A small FastAPI + Redis system built incrementally to learn practical rate
-limiting and distributed-systems behavior. The current state is documented in
-[`docs/system-design-chronicles.md`](docs/system-design-chronicles.md).
+limiting and distributed-systems behavior.
 
 The primary limiter is `GET /demo-sliding`: it enforces at most five accepted
 requests per client in any rolling 60 seconds. `/counter`, `/demo`, and
@@ -62,8 +61,7 @@ docker compose --profile multi up -d --build api api-second
 ```
 
 The same API is then reachable on ports 8000 and 8001. Both processes use the
-same Redis instance and enforce one global limit. See the reproducible
-experiment in [`docs/system-design-chronicles.md`](docs/system-design-chronicles.md).
+same Redis instance and enforce one global limit.
 
 Run the unit tests and real-Redis integration test:
 
