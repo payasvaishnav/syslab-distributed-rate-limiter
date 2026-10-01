@@ -1,0 +1,38 @@
+# Python-generated files and local environments
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+build/
+dist/
+*.egg-info/
+
+# Test, type-checking, and coverage output
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+.tox/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+
+# Local configuration and secrets (an example file may be committed)
+.env
+.env.*
+!.env.example
+
+# Redis persistence files from any local experiments
+dump.rdb
+appendonly.aof
+appendonlydir/
+
+# Logs and machine/editor files
+*.log
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+

@@ -1,0 +1,142 @@
+services:
+  redis:
+    image: redis:7.4-alpine
+    command:
+      - redis-server
+      - --save
+      - ""
+      - --appendonly
+      - "no"
+      - --maxmemory
+      - 64mb
+      - --maxmemory-policy
+      - noeviction
+    ports:
+      - "6379:6379"
+
+  redis-lab:
+    image: redis:7.4-alpine
+    command:
+      - redis-server
+      - --maxmemory
+      - 4mb
+      - --maxmemory-policy
+      - allkeys-lru
+      - --save
+      - ""
+      - --appendonly
+      - "no"
+    ports:
+      - "6380:6379"
+    profiles:
+      - lab
+
+  redis-rdb-lab:
+    image: redis:7.4-alpine
+    command:
+      - redis-server
+      - --save
+      - "60 1"
+      - --appendonly
+      - "no"
+      - --dir
+      - /data
+    ports:
+      - "6381:6379"
+    volumes:
+      - redis-rdb-lab-data:/data
+    profiles:
+      - lab
+
+  redis-aof-lab:
+    image: redis:7.4-alpine
+    command:
+      - redis-server
+      - --save
+      - ""
+      - --appendonly
+      - "yes"
+      - --appendfsync
+      - everysec
+      - --dir
+      - /data
+    ports:
+      - "6382:6379"
+    volumes:
+      - redis-aof-lab-data:/data
+    profiles:
+      - lab
+
+  redis-primary-lab:
+    image: redis:7.4-alpine
+    command:
+      - redis-server
+      - --save
+      - ""
+      - --appendonly
+      - "no"
+    profiles:
+      - replication
+
+  redis-replica-lab:
+    image: redis:7.4-alpine
+    command:
+      - redis-server
+      - --replicaof
+      - redis-primary-lab
+      - "6379"
+      - --save
+      - ""
+      - --appendonly
+      - "no"
+    depends_on:
+      - redis-primary-lab
+    profiles:
+      - replication
+
+  api:
+    build: .
+    environment:
+      REDIS_URL: redis://redis:6379/0
+      REDIS_CONNECT_TIMEOUT_SECONDS: "0.2"
+      REDIS_SOCKET_TIMEOUT_SECONDS: "0.2"
+      REDIS_OPERATION_DEADLINE_SECONDS: "0.25"
+    volumes:
+      - ./app:/app/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+
+  api-second:
+    profiles:
+      - multi
+    build: .
+    environment:
+      REDIS_URL: redis://redis:6379/0
+      REDIS_CONNECT_TIMEOUT_SECONDS: "0.2"
+      REDIS_SOCKET_TIMEOUT_SECONDS: "0.2"
+      REDIS_OPERATION_DEADLINE_SECONDS: "0.25"
+    volumes:
+      - ./app:/app/app
+    ports:
+      - "8001:8000"
+    depends_on:
+      - redis
+
+  tests:
+    profiles:
+      - test
+    build: .
+    environment:
+      REDIS_URL: redis://redis:6379/0
+      REDIS_OPERATION_DEADLINE_SECONDS: "2"
+    volumes:
+      - ./:/app
+    command: python -m pytest -q
+    depends_on:
+      - redis
+
+volumes:
+  redis-rdb-lab-data:
+  redis-aof-lab-data:
